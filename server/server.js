@@ -9,6 +9,8 @@ import protect, {
     authorize
 } from "./middleware/authMiddleware.js";
 
+import campaignRoutes from "./routes/campaignRoutes.js";
+
 dotenv.config();
 
 const app = express();
@@ -19,6 +21,10 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/api/auth", authRoutes);
+app.use(
+    "/api/campaign",
+    campaignRoutes
+)
 
 
 // profile route
