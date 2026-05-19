@@ -108,3 +108,26 @@ export const applyCampaign = async(req, res)=>{
         })
     }
 }
+
+//get applicants
+
+export const getApplicants = async(req, res)=>{
+    try {
+        const {campaignId} = req.params;
+        const applications = await Application.find({
+            campaignId
+        })
+        .populate(
+            "influencerId",
+            "name email role"
+        );
+        res.status(200).json({
+            count:applications.length,
+            applications
+        });
+    } catch (error) {
+        res.status(500).json({
+            message:error.message
+        });
+    }
+};
