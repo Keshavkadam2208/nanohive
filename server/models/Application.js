@@ -10,19 +10,33 @@ const applicationSchema = new mongoose.Schema(
         },
         influencerId:{
             type:mongoose.Schema.Types.ObjectId,
-            ref:"user",
+            ref:"User",
             required:true
         },
         status:{
             type:String,
             enum:["pending", "accepted", "rejected"],
-            defauld:"pending"
+            default:"pending"
+        },
+        rejectionReason:{
+            type:String,
+            default:""
         }
     },
     {
         timestamps:true
     }
 );
+
+//duplicate prevention
+
+applicationSchema.index({
+    campaignId:1,
+    influencerId:1
+},
+{
+    unique:true
+});
 
 const Application = mongoose.model(
     "Application",

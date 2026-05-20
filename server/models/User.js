@@ -21,6 +21,34 @@ const userSchema = new mongoose.Schema({
         type:String,
         enum:["brand","influencer", "admin"],
         default:"influencer"
+    },
+    bio:{
+        type:String,
+        default:""
+    },
+    instagramHandle:{
+        type:String,
+        default:""
+    },
+    followers:{
+        type:Number,
+        default:0
+    },
+    engagementRate:{
+        type:Number,
+        default:0
+    },
+    niche:{
+        type:String,
+        default:""
+    },
+    profileImage:{
+        type:String,
+        default:""
+    },
+    website:{
+        type:String,
+        default:""
     }
 },
 {

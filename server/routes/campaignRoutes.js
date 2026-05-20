@@ -1,6 +1,11 @@
 import express from "express";
 import{
-    createCampaign,getAllCampaigns,applyCampaign,getApplicants
+    createCampaign,
+    getAllCampaigns,
+    applyCampaign,
+    getApplicants,
+    updateApplicationStatus,
+    getMyApplications
 }
 from "../controllers/campaignController.js";
 
@@ -31,5 +36,19 @@ router.get(
     protect, authorize("brand"),
     getApplicants
 );
+
+router.put(
+    "/application/:applicationId",
+    protect,
+    authorize("brand"),
+    updateApplicationStatus
+);
+
+router.get(
+    "/my-applications",
+    protect,
+    authorize("influencer"),
+    getMyApplications
+)
 
 export default router;

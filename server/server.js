@@ -10,6 +10,8 @@ import protect, {
 } from "./middleware/authMiddleware.js";
 
 import campaignRoutes from "./routes/campaignRoutes.js";
+import userRoutes from "./routes/userRoutes.js";
+
 
 dotenv.config();
 
@@ -25,6 +27,7 @@ app.use(
     "/api/campaign",
     campaignRoutes
 )
+app.use("/api/user", userRoutes);
 
 
 // profile route
