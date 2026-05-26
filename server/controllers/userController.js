@@ -59,3 +59,53 @@ export const getProfile = async(req,res)=>{
         })
     }
 }
+
+export const searchInfluencers = async(req, res)=>{
+    try {
+        const{
+            niche,
+            followers,
+            engagement,
+            page = 1,
+            limit = 10
+        } = req.query;
+
+        const filter = {
+            role:"influencer"
+        };
+        const skip = (Number(page) - 1) * Number(limit);
+        if(niche)
+        {
+            filter.niche = niche;
+        }
+        if(followers)
+        {
+            filter.followers = {
+                $gte:Number(followers)
+            };
+        }
+        if(engagement)
+        {
+            filter.engagementRate = {
+                $gte:Number(engagement)
+            };
+        }
+
+        const users = await User.find(filter
+        )
+        .select("name bio instagramHandle followers engagementRate niche profileImage website")
+        .skip(skip)
+        .limit(Number(limit));
+        
+        res.status(200).json({
+            count:users.length,
+            currentPage:Number(page),
+            limit:Number(limit),
+            users
+        })
+    } catch (error) {
+        res.status(500).json({
+            message:error.message
+        })
+    }
+}
