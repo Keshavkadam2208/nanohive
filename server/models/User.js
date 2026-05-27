@@ -49,7 +49,12 @@ const userSchema = new mongoose.Schema({
     website:{
         type:String,
         default:""
+    },
+    profileCompleted:{
+        type:Boolean,
+        default:false
     }
+
 },
 {
     timestamps:true

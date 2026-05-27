@@ -1,19 +1,19 @@
+import "./config/env.js";
 import express from "express";
-import dotenv from "dotenv";
+
 import cors from "cors";
 
 import connectDB from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
 
-import protect, {
-    authorize
-} from "./middleware/authMiddleware.js";
+import protect, { authorize } from "./middleware/authMiddleware.js";
 
 import campaignRoutes from "./routes/campaignRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
+import errorHandler from "./middleware/errorMiddleware.js";
+import path from "path";
 
-
-dotenv.config();
+// dotenv.config();
 
 const app = express();
 
@@ -23,96 +23,77 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/api/auth", authRoutes);
-app.use(
-    "/api/campaign",
-    campaignRoutes
-)
+app.use("/api/campaign", campaignRoutes);
 app.use("/api/user", userRoutes);
 
+app.use(
+  "/uploads",
+
+  express.static(path.join(process.cwd(), "..", "uploads")),
+);
 
 // profile route
 
 app.get(
-    "/api/profile",
-    protect,
+  "/api/profile",
+  protect,
 
-    (req,res)=>{
+  (req, res) => {
+    res.json({
+      message: "Protected route accessed",
 
-        res.json({
-
-            message:"Protected route accessed",
-
-            user:req.user
-
-        });
-
-    }
+      user: req.user,
+    });
+  },
 );
-
 
 // admin route
 
 app.get(
-    "/api/admin",
-    protect,
-    authorize("admin"),
+  "/api/admin",
+  protect,
+  authorize("admin"),
 
-    (req,res)=>{
-
-        res.json({
-
-            message:"Welcome Admin"
-
-        });
-
-    }
+  (req, res) => {
+    res.json({
+      message: "Welcome Admin",
+    });
+  },
 );
-
 
 // brand route
 
 app.get(
-    "/api/brand",
-    protect,
-    authorize("brand"),
+  "/api/brand",
+  protect,
+  authorize("brand"),
 
-    (req,res)=>{
-
-        res.json({
-
-            message:"Welcome Brand"
-
-        });
-
-    }
+  (req, res) => {
+    res.json({
+      message: "Welcome Brand",
+    });
+  },
 );
-
 
 // influencer route
 
 app.get(
-    "/api/influencer",
-    protect,
-    authorize("influencer"),
+  "/api/influencer",
+  protect,
+  authorize("influencer"),
 
-    (req,res)=>{
-
-        res.json({
-
-            message:"Welcome Influencer"
-
-        });
-
-    }
+  (req, res) => {
+    res.json({
+      message: "Welcome Influencer",
+    });
+  },
 );
 
+//errorHandler-yeh sbse niche rahega kyu? req->routes->error hua?->errorHandler
+app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT,()=>{
-
-    console.log(
-        `Server running on ${PORT}`
-    );
-
+app.listen(PORT, () => {
+  console.log(`Server running on ${PORT}`);
 });
