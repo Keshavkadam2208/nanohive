@@ -1,3 +1,7 @@
+import {
+  sendAcceptanceEmail,
+  sendRejectionEmail,
+} from "../services/emailService.js";
 import Campaign from "../models/campaign.js";
 import Application from "../models/Application.js";
 import { application, response } from "express";
@@ -126,113 +130,157 @@ export const getApplicants = async (req, res) => {
 //update applicationstatus function
 
 export const updateApplicationStatus = async (req, res) => {
+
   try {
+
     const { applicationId } = req.params;
+
     const { status, rejectionReason } = req.body;
 
-    if (!["accepted", "rejected"].includes(status)) {
+
+    if (
+      !["accepted", "rejected"].includes(status)
+    ) {
+
       return res.status(400).json({
+
         message: "Invalid status",
+
       });
+
     }
 
-    const application = await Application.findById(
-      applicationId,
-      // {
-      //     status
-      // },
-      // {
-      //     new:true
-      // }
-    );
+
+    const application =
+      await Application.findById(applicationId)
+
+        .populate(
+          "influencerId",
+          "name email"
+        )
+
+        .populate(
+          "campaignId",
+          "title"
+        );
+
+
     if (!application) {
+
       return res.status(404).json({
+
         message: "Application not found",
+
       });
+
     }
 
-    //update status
+
+    // update status
     application.status = status;
 
-    //save rejection reason only when rejected
+
+    // save rejection reason only when rejected
     if (status === "rejected") {
-      application.rejectionReason = rejectionReason;
+
+      application.rejectionReason =
+        rejectionReason;
+
     }
+
+
+    // send acceptance email
+    if (status === "accepted") {
+
+      await sendAcceptanceEmail(
+
+        application.influencerId.email,
+
+        application.influencerId.name,
+
+        application.campaignId.title
+
+      );
+
+    }
+
+
+    // send rejection email
+    if (status === "rejected") {
+
+      await sendRejectionEmail(
+
+        application.influencerId.email,
+
+        application.influencerId.name,
+
+        application.campaignId.title
+
+      );
+
+    }
+
+
     await application.save();
+
+
     res.status(200).json({
+
       message: "Application updated",
+
       application,
+
+    });
+
+  }
+
+  catch (error) {
+
+    res.status(500).json({
+
+      message: error.message,
+
+    });
+
+  }
+
+};
+
+//get my applications function logic
+
+export const getMyApplications = async (req, res) => {
+  try {
+    const applications = await Application.find({
+      influencerId: req.user._id,
+    }).populate("campaignId", "title budget niche");
+    //console.log(applications);
+
+    const formattedApplications = applications.map((app) => {
+      const response = {
+        id: app._id,
+
+        campaign: app.campaignId,
+
+        status: app.status,
+      };
+
+      // rejectionReason only if rejected
+
+      if (app.status === "rejected") {
+        response.rejectionReason = app.rejectionReason;
+      }
+
+      return response;
+    });
+
+    res.status(200).json({
+      count: formattedApplications.length,
+
+      applications: formattedApplications,
     });
   } catch (error) {
     res.status(500).json({
       message: error.message,
     });
   }
-};
-
-//get my applications function logic
-
-export const getMyApplications = async(req,res)=>{
-
-try{
-
-const applications =
-await Application.find({
-
-influencerId:req.user._id
-
-})
-.populate(
-"campaignId",
-"title budget niche"
-);
-//console.log(applications);
-
-const formattedApplications =
-applications.map((app)=>{
-
-const response = {
-
-id:app._id,
-
-campaign:app.campaignId,
-
-status:app.status
-
-};
-
-
-// rejectionReason only if rejected
-
-if(app.status==="rejected"){
-
-response.rejectionReason=
-app.rejectionReason;
-
-}
-
-return response;
-
-});
-
-
-res.status(200).json({
-
-count:formattedApplications.length,
-
-applications:formattedApplications
-
-});
-
-}
-catch(error){
-
-res.status(500).json({
-
-message:error.message
-
-});
-
-}
-
 };
