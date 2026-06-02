@@ -1,7 +1,8 @@
 import User from "../models/User.js";
+import crypto from "crypto";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { sendWelcomeEmail } from "../services/emailService.js";
+import { sendWelcomeEmail, sendResetPasswordEmail} from "../services/emailService.js";
 export const signup = async (req, res) => {
   try {
     const { name, email, password, role } = req.body;
@@ -107,3 +108,84 @@ export const login = async (req, res) => {
     });
   }
 };
+
+//forgot password wala logic
+
+export const forgotPassword = async(req, res)=>{
+  try {
+    const {email} = req.body;
+    const user = await User.findOne({
+      email
+    });
+
+    if(!user){
+      return res.status(404).json({
+        message:"User not found"
+      });
+    }
+    const resetToken = user.generateResetPasswordToken();
+    await user.save({
+      validateBeforeSave:false
+    });
+    
+      const resetUrl =
+`${req.protocol}://${req.get("host")}/api/auth/reset-password/${resetToken}`;
+await sendResetPasswordEmail(
+
+user.email,
+
+resetUrl
+
+);
+res.status(200).json({
+
+message:
+"Password reset email sent",
+resetToken
+
+});
+    
+  } catch (error) {
+    res.status(500).json({
+      message:error.message
+    });
+  }
+}
+
+//resetpassword
+
+export const resetPassword = 
+async(req, res)=>{
+  try {
+    const resetPasswordToken = 
+    crypto
+    .createHash("sha256")
+    .update(req.params.token)
+    .digest("hex");
+
+    const user = await User.findOne({
+      resetPasswordToken,
+      resetPasswordExpire:{
+        $gt:Date.now()
+      }
+    });
+
+    if(!user)
+    {
+     res.status(400).json({
+      message:"Invalid or expired token"
+     })
+    }
+    user.password = req.body.password;
+     user.resetPasswordToken = undefined;
+     user.resetPasswordExpire = undefined;
+     await user.save();
+     res.status(200).json({
+      message:"Password reset successfull"
+     })
+  } catch (error) {
+    res.status(500).json({
+      message:error.message
+    })
+  }
+}

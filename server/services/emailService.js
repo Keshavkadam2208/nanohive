@@ -235,3 +235,89 @@ html
 });
 
 };
+
+//sendResetPaaswordEmail
+
+export const sendResetPasswordEmail =
+async(
+
+to,
+resetUrl
+
+)=>{
+
+const html = `
+
+<div style="
+font-family:Arial;
+padding:20px;
+background:#f4f4f4;
+">
+
+<div style="
+max-width:600px;
+margin:auto;
+background:white;
+padding:30px;
+border-radius:10px;
+">
+
+<h1 style="
+color:#111827;
+">
+Reset Your Password 🔐
+</h1>
+
+<p>
+We received a request
+to reset your password.
+</p>
+
+<p>
+Click the button below
+to continue:
+</p>
+
+<a
+href="${resetUrl}"
+style="
+display:inline-block;
+padding:12px 20px;
+background:#111827;
+color:white;
+text-decoration:none;
+border-radius:6px;
+"
+>
+Reset Password
+</a>
+
+<p style="
+margin-top:20px;
+color:#666;
+">
+This link expires in
+15 minutes.
+</p>
+
+</div>
+
+</div>
+
+`;
+
+await transporter.sendMail({
+
+from:
+process.env.EMAIL_USER,
+
+to,
+
+subject:
+"Reset Your NanoHive Password 🔐",
+
+html
+
+});
+
+};
