@@ -5,11 +5,12 @@ import{
     applyCampaign,
     getApplicants,
     updateApplicationStatus,
-    getMyApplications
+    getMyApplications,
 }
 from "../controllers/campaignController.js";
 
 import protect, {authorize} from "../middleware/authMiddleware.js";
+import { getBrandAnalytics } from "../controllers/analyticsController.js";
 
 const router = express.Router();
 router.post(
@@ -50,5 +51,7 @@ router.get(
     authorize("influencer"),
     getMyApplications
 )
+
+
 
 export default router;

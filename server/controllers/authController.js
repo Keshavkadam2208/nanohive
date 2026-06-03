@@ -2,7 +2,7 @@ import User from "../models/User.js";
 import crypto from "crypto";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { sendWelcomeEmail, sendResetPasswordEmail} from "../services/emailService.js";
+import { sendWelcomeEmail, sendResetPasswordEmail, sendPasswordChangedEmail} from "../services/emailService.js";
 export const signup = async (req, res) => {
   try {
     const { name, email, password, role } = req.body;
@@ -180,6 +180,13 @@ async(req, res)=>{
      user.resetPasswordToken = undefined;
      user.resetPasswordExpire = undefined;
      await user.save();
+     await sendPasswordChangedEmail(
+
+user.email,
+
+user.name
+
+);
      res.status(200).json({
       message:"Password reset successfull"
      })

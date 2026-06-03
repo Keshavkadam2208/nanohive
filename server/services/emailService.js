@@ -321,3 +321,110 @@ html
 });
 
 };
+
+//password reset succesfull mail template
+
+export const sendPasswordChangedEmail =
+async(
+
+to,
+name
+
+)=>{
+
+const html = `
+
+<div style="
+font-family:Arial,sans-serif;
+padding:20px;
+background:#f4f4f4;
+">
+
+<div style="
+max-width:600px;
+margin:auto;
+background:white;
+padding:30px;
+border-radius:12px;
+">
+
+<h1 style="
+color:#111827;
+margin-bottom:20px;
+">
+Password Changed Successfully 🔐
+</h1>
+
+<p>
+Hi ${name},
+</p>
+
+<p>
+Your NanoHive account password has been changed successfully.
+</p>
+
+<p>
+If you made this change, no further action is required.
+</p>
+
+<div style="
+background:#FEF3C7;
+padding:15px;
+border-radius:8px;
+margin:20px 0;
+">
+
+<strong>
+Didn't make this change?
+</strong>
+
+<p>
+Your account may be compromised.
+Please contact our support team immediately.
+</p>
+
+</div>
+
+<a
+href="mailto:${process.env.SUPPORT_EMAIL}"
+style="
+display:inline-block;
+padding:12px 20px;
+background:#111827;
+color:white;
+text-decoration:none;
+border-radius:6px;
+"
+>
+Contact Support
+</a>
+
+<p style="
+margin-top:30px;
+color:#666;
+font-size:14px;
+">
+NanoHive Security Team
+</p>
+
+</div>
+
+</div>
+
+`;
+
+await transporter.sendMail({
+
+from:
+process.env.EMAIL_USER,
+
+to,
+
+subject:
+"Your NanoHive Password Was Changed 🔐",
+
+html
+
+});
+
+};

@@ -12,6 +12,7 @@ import campaignRoutes from "./routes/campaignRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import errorHandler from "./middleware/errorMiddleware.js";
 import path from "path";
+import analyticsRoutes from "./routes/analyticsRoutes.js";
 
 // dotenv.config();
 
@@ -25,6 +26,10 @@ app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/campaign", campaignRoutes);
 app.use("/api/user", userRoutes);
+app.use(
+   "/api/analytics",
+   analyticsRoutes
+);
 
 app.use(
   "/uploads",
