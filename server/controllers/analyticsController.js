@@ -49,3 +49,44 @@ export const getBrandAnalytics = async(req, res) =>{
         })
     }
 }
+
+//Influencer analytics
+
+export const getInfluencerAnalytics = 
+async (req, res) => {
+    try {
+        const totalApplications = 
+        await Application.countDocuments({
+            influencerId: req.user._id
+        });
+
+        const acceptedApplications = 
+        await Application.countDocuments({
+            influencerId: req.user._id,
+            status: "accepted"
+        });
+
+        const pendingApplications = 
+        await Application.countDocuments({
+            influencerId: req.user._id,
+            status: "pending"
+        });
+
+        const rejectedApplications = 
+        await Application.countDocuments({
+            influencerId: req.user._id,
+            status: "rejected"
+        })
+
+        res.status(200).json({
+            totalApplications,
+            acceptedApplications,
+            pendingApplications,
+            rejectedApplications
+        });
+    } catch (error) {
+        res.status(200).json({
+            message:error.message
+        })
+    }
+}
