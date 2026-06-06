@@ -1,3 +1,6 @@
+import helmet from "helmet";
+import rateLimit
+from "express-rate-limit";
 import "./config/env.js";
 import express from "express";
 
@@ -21,12 +24,23 @@ const app = express();
 
 connectDB();
 
+//rate limiter
+const limiter = rateLimit({
+  windowMs:15 * 60 * 1000,
+  max:100,
+  standardHeaders:true,
+  legacyHeaders:false,
+  message:"Too many requests, please try again later."
+});
 app.use(cors());
 app.use(express.json());
+app.use(helmet());
+app.use(limiter);
 
 app.use("/api/auth", authRoutes);
 app.use("/api/campaign", campaignRoutes);
 app.use("/api/user", userRoutes);
+
 
 app.use(
    "/api/analytics",
@@ -100,6 +114,8 @@ app.get(
     });
   },
 );
+
+
 
 //errorHandler-yeh sbse niche rahega kyu? req->routes->error hua?->errorHandler
 app.use(errorHandler);
