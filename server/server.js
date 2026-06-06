@@ -13,6 +13,7 @@ import userRoutes from "./routes/userRoutes.js";
 import errorHandler from "./middleware/errorMiddleware.js";
 import path from "path";
 import analyticsRoutes from "./routes/analyticsRoutes.js";
+import notificationRoutes from "./routes/notificationRoutes.js";
 
 // dotenv.config();
 
@@ -26,6 +27,7 @@ app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/campaign", campaignRoutes);
 app.use("/api/user", userRoutes);
+
 app.use(
    "/api/analytics",
    analyticsRoutes
@@ -35,6 +37,11 @@ app.use(
   "/uploads",
 
   express.static(path.join(process.cwd(), "..", "uploads")),
+);
+
+app.use(
+  "/api/notifications",
+  notificationRoutes
 );
 
 // profile route

@@ -2,6 +2,7 @@ import {
   sendAcceptanceEmail,
   sendRejectionEmail,
 } from "../services/emailService.js";
+import Notification from "../models/Notification.js";
 import Campaign from "../models/campaign.js";
 import Application from "../models/Application.js";
 import { application, response } from "express";
@@ -201,6 +202,19 @@ export const updateApplicationStatus = async (req, res) => {
         application.campaignId.title
 
       );
+      await Notification.create({
+        recipient:application.influencerId._id,
+
+        title:
+         "Application Accepted 🎉",
+
+         message:
+            `Your application for "${application.campaignId.title}" has been accepted.`,
+
+        type:
+        "application"
+
+      });
 
     }
 
@@ -217,6 +231,21 @@ export const updateApplicationStatus = async (req, res) => {
         application.campaignId.title
 
       );
+      await Notification.create({
+
+    recipient:
+    application.influencerId._id,
+
+    title:
+    "Application Rejected",
+
+    message:
+    `Your application for "${application.campaignId.title}" was not selected.`,
+
+    type:
+    "application"
+
+});
 
     }
 
