@@ -27,14 +27,14 @@ export const signup = async (req, res) => {
 
     //hash password
 
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
+   // const salt = await bcrypt.genSalt(10);
+   // const hashedPassword = await bcrypt.hash(password, salt);
 
     //create user
     const user = await User.create({
       name,
       email,
-      password: hashedPassword,
+      password,
       role,
     });
     await sendWelcomeEmail(user.email, user.name);
@@ -72,7 +72,7 @@ export const login = async (req, res) => {
       });
     }
 
-    const isMatch = await bcrypt.compare(password, user.password);
+    const isMatch = await user.matchPassword(password);
 
     if (!isMatch) {
       return res.status(400).json({

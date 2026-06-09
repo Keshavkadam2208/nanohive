@@ -27,7 +27,7 @@ function Login(){
             navigate("/dashboard");
             console.log(localStorage.getItem("token"));
         } catch (error) {
-            console.log(error.response.data);
+            console.log(error.response?.data || error.message);
         }
     }
     const navigate = useNavigate();

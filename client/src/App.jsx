@@ -8,6 +8,7 @@ from "react-router-dom";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Dashboard from "./pages/Dashboard";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App(){
 
@@ -18,7 +19,7 @@ function App(){
             <Routes>
 
                 <Route
-                path="/"
+                path="/login"
                 element={<Login/>}
                 />
 
@@ -29,7 +30,11 @@ function App(){
 
                 <Route
                 path="/dashboard"
-                element={<Dashboard/>}
+                element={
+                <ProtectedRoute>
+                <Dashboard/>
+                </ProtectedRoute>
+                }
                 />
 
             </Routes>
