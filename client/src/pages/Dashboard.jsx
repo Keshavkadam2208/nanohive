@@ -59,6 +59,9 @@ function Dashboard(){
         <p>Role:{user?.role}</p>
         
         <button onClick={handleLogout}>LogOut</button>
+        <button onClick={()=>
+            navigate("/profile")
+        }>Profile</button>
 </div>
     );
 

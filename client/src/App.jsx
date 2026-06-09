@@ -9,6 +9,7 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Dashboard from "./pages/Dashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
+import Profile from "./pages/Profile";
 
 function App(){
 
@@ -37,6 +38,14 @@ function App(){
                 }
                 />
 
+                <Route
+                path="/profile"
+                element={
+                    <ProtectedRoute>
+                        <Profile/>
+                    </ProtectedRoute>
+                }
+                />
             </Routes>
 
         </BrowserRouter>

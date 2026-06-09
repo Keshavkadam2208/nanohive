@@ -26,17 +26,24 @@ export const updateProfile = async(req, res)=>{
         user.niche = niche ?? user.niche;
         user.website = website ?? user.website;
 
-        if(user.bio && 
+
+        //profile completion logic
+        if(user.role === "influencer")
+        {
+            user.profileCompleted = Boolean(
+                user.bio && 
             user.instagramHandle && 
             user.followers > 0 &&
             user.niche
-        )
-        {
-            user.profileCompleted = true;
+            );
         }
-        else{
-            user.profileCompleted = false;
-        }
+        
+       else if(user.role === "brand")
+       {
+        user.profileCompleted = Boolean(
+            user.bio && user.website
+        );
+       }
         await user.save();
         res.status(200).json({
             message:"Profile updated successfully!",
