@@ -62,6 +62,13 @@ function Dashboard(){
         <button onClick={()=>
             navigate("/profile")
         }>Profile</button>
+        <button
+    onClick={() =>
+        navigate("/search")
+    }
+>
+    Search Influencers
+</button>
 </div>
     );
 

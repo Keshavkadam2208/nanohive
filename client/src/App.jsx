@@ -10,6 +10,7 @@ import Signup from "./pages/Signup";
 import Dashboard from "./pages/Dashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Profile from "./pages/Profile";
+import SearchInfluencers from "./pages/SearchInfluencers";
 
 function App(){
 
@@ -43,6 +44,15 @@ function App(){
                 element={
                     <ProtectedRoute>
                         <Profile/>
+                    </ProtectedRoute>
+                }
+                />
+
+                <Route
+                path="/search"
+                element={
+                    <ProtectedRoute>
+                        <SearchInfluencers/>
                     </ProtectedRoute>
                 }
                 />
